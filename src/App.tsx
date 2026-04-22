@@ -15,7 +15,42 @@ import {
   Award
 } from 'lucide-react';
 import { LANGUAGES, CEFRLevel, TOPICS, CYL_RUBRICS, Language } from './constants';
-import { transcribeAndAssess, generateTask, translateTopics, AssessmentResult } from './services/geminiService';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || "");
+
+export interface AssessmentResult {
+  transcript: string;
+  score: number;
+  cefrLevel: string;
+  criteriaFeedback: {
+    eficacia: { feedback: string; score: number };
+    coherencia: { feedback: string; score: number };
+    correccion: { feedback: string; score: number };
+    alcance: { feedback: string; score: number };
+    fonologia: { feedback: string; score: number };
+  };
+  globalAssessment: string;
+}
+
+async function transcribeAndAssess(audioBase64: string, language: string, targetLevel: string, topic: string, criteria: string) {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const prompt = `Analiza este audio en ${language} para nivel ${targetLevel}. Tema: ${topic}. Criterios: ${criteria}. Responde solo en JSON.`;
+  try {
+    const result = await model.generateContent([{ text: prompt }, { inlineData: { mimeType: "audio/webm", data: audioBase64 } }]);
+    return JSON.parse(result.response.text());
+  } catch (error) { throw error; }
+}
+
+async function generateTask(language: string, level: string, topic: string) {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const prompt = `Crea una tarea de speaking para ${language} ${level} sobre ${topic}. JSON: {"task": "...", "questions": []}`;
+  const result = await model.generateContent(prompt);
+  return JSON.parse(result.response.text());
+}
+
+async function translateTopics(language: string, topics: string[]) { return topics; }
+
 
 type Screen = 'LANGUAGE_SELECT' | 'CONFIG' | 'TASK' | 'FEEDBACK' | 'LOADING';
 
