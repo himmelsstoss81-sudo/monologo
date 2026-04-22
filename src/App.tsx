@@ -37,17 +37,36 @@ async function transcribeAndAssess(audioBase64: string, language: string, target
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const prompt = `Analiza este audio en ${language} para nivel ${targetLevel}. Tema: ${topic}. Criterios: ${criteria}. Responde solo en JSON.`;
   try {
-    const result = await model.generateContent([{ text: prompt }, { inlineData: { mimeType: "audio/webm", data: audioBase64 } }]);
-    return JSON.parse(result.response.text());
-  } catch (error) { throw error; }
+    // Formato corregido para la librería @google/generative-ai
+    const result = await model.generateContent([
+      prompt,
+      {
+        inlineData: {
+          mimeType: "audio/webm",
+          data: audioBase64
+        }
+      }
+    ]);
+    const response = await result.response;
+    return JSON.parse(response.text());
+  } catch (error) { 
+    console.error("Error en Gemini:", error);
+    throw error; 
+  }
 }
 
 async function generateTask(language: string, level: string, topic: string) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const prompt = `Crea una tarea de speaking para ${language} ${level} sobre ${topic}. JSON: {"task": "...", "questions": []}`;
-  const result = await model.generateContent(prompt);
-  return JSON.parse(result.response.text());
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return JSON.parse(response.text());
+  } catch (error) {
+    throw error;
+  }
 }
+
 
 async function translateTopics(language: string, topics: string[]) { return topics; }
 
