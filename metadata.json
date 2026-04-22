@@ -1,0 +1,7 @@
+{
+  "name": "Remix: Speaking coach-v2🎙️",
+  "description": "A comprehensive speaking practice and assessment tool for foreign language students using CEFR standards.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
