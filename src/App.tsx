@@ -385,7 +385,7 @@ export default function App() {
     return langMap[key] || key;
   };
 
-    const startRecording = async () => {
+      const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -435,51 +435,6 @@ export default function App() {
     }
   };
 
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const url = URL.createObjectURL(audioBlob);
-        setAudioUrl(url);
-        
-        const reader = new FileReader();
-        reader.readAsDataURL(audioBlob);
-        reader.onloadend = () => {
-          const base64String = (reader.result as string).split(',')[1];
-          setAudioBase64(base64String);
-        };
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-      setTimeLeft(duration);
-
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current!);
-            // Auto stop 3 seconds after time is up
-            autoStopRef.current = setTimeout(() => {
-              stopRecording();
-            }, 3000);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-    } catch (err) {
-      console.error("Error accessing microphone:", err);
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-      if (autoStopRef.current) clearTimeout(autoStopRef.current);
-    }
-  };
 
   const handleStartPractice = async () => {
     setScreen('LOADING');
