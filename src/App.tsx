@@ -74,6 +74,12 @@ async function translateTopics(language: string, topics: string[]) { return topi
 type Screen = 'LANGUAGE_SELECT' | 'CONFIG' | 'TASK' | 'FEEDBACK' | 'LOADING';
 
 export default function App() {
+    useEffect(() => {
+    // Prueba forzada de micrófono nada más cargar la app
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(() => console.log("Micro funcionando"))
+      .catch((err) => alert("El navegador bloquea el micro: " + err));
+  }, []);
   const [screen, setScreen] = useState<Screen>('LANGUAGE_SELECT');
   const [selectedLang, setSelectedLang] = useState<Language | null>(null);
   const [level, setLevel] = useState<CEFRLevel>('B1');
