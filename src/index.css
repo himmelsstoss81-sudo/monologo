@@ -1,11 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-@import "tailwindcss";
+@import url('https://googleapis.com');
 
-@theme {
-  --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
+:root {
+  font-family: "Atkinson Hyperlegible", sans-serif;
 }
 
 body {
-  background-color: white;
+  margin: 0;
+  background-color: #f9fafb;
   color: #1f2937;
+}
+
+/* Esto evitará que la app se vea rota aunque no esté Tailwind activo */
+button {
+  cursor: pointer;
 }
