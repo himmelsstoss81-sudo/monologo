@@ -34,21 +34,33 @@ ${topic}
 
   const data = await response.json();
 
-// 🔥 Extraer texto de Gemini
-const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// 🔥 Buscar texto en cualquier parte
+let text = "";
 
-// Intentar convertir a JSON (porque tú lo pides así en el prompt)
+try {
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  text = parts.map(p => p.text || "").join(" ");
+} catch (e) {
+  text = "";
+}
+
+// Intentar parsear JSON
 let parsed;
 
 try {
   parsed = JSON.parse(text);
 } catch (e) {
-  // Si falla, devolver algo básico para no romper la app
   parsed = {
-    transcript: text,
+    transcript: text || "No se pudo procesar la respuesta",
     score: 0,
     cefrLevel: "N/A",
-    criteriaFeedback: {},
+    criteriaFeedback: {
+      eficacia: { feedback: "", score: 0 },
+      coherencia: { feedback: "", score: 0 },
+      correccion: { feedback: "", score: 0 },
+      alcance: { feedback: "", score: 0 },
+      fonologia: { feedback: "", score: 0 }
+    },
     globalAssessment: text
   };
 }
