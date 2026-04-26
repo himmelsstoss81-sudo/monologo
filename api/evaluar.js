@@ -34,5 +34,25 @@ ${topic}
 
   const data = await response.json();
 
-  res.status(200).json(data);
+// 🔥 Extraer texto de Gemini
+const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+// Intentar convertir a JSON (porque tú lo pides así en el prompt)
+let parsed;
+
+try {
+  parsed = JSON.parse(text);
+} catch (e) {
+  // Si falla, devolver algo básico para no romper la app
+  parsed = {
+    transcript: text,
+    score: 0,
+    cefrLevel: "N/A",
+    criteriaFeedback: {},
+    globalAssessment: text
+  };
+}
+
+res.status(200).json(parsed);
+
 }
