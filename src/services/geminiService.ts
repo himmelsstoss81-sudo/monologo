@@ -43,3 +43,20 @@ export async function transcribeAndAssess(
 
   return await response.json();
 }
+export async function generateTask(language: string, level: string, topic: string) {
+  return {
+    task: `Habla sobre ${topic} en ${language} (nivel ${level})`,
+    questions: [
+      "¿Qué opinas sobre este tema?",
+      "¿Tienes experiencia personal?",
+      "¿Qué ventajas tiene?",
+      "¿Qué inconvenientes tiene?",
+      "¿Cómo ha cambiado con el tiempo?",
+      "¿Qué harías tú?"
+    ]
+  };
+}
+
+export async function translateTopics(_language: string, topics: string[]) {
+  return topics;
+}
