@@ -33,6 +33,7 @@ ${topic}
   );
 
   const data = await response.json();
+  console.log("RESPUESTA GEMINI:", JSON.stringify(data, null, 2));
 
 // 🔥 Buscar texto en cualquier parte
 let text = "";
