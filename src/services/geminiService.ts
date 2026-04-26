@@ -41,7 +41,9 @@ export async function transcribeAndAssess(
     throw new Error("Error en la API");
   }
 
-  return await response.json();
+  const data = await response.json();
+console.log("RESPUESTA BACKEND:", data);
+return data;
 }
 export async function generateTask(language: string, level: string, topic: string) {
   return {
